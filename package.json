@@ -1,0 +1,12 @@
+{
+  "name": "nats",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "nats",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "nats": "^2.7.1",
+    "zlib": "^1.0.5"
+  }
+}
