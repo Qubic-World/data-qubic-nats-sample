@@ -1,12 +1,17 @@
 
 import { connect, StringCodec } from "nats";
 
-import zlib from 'zlib';
-
 const token = "";
 const scores = "qubic.data.scores"; // nats subject 
 const revenues = "qubic.data.revenues"; // nats subject 
 const ticks = "qubic.data.ticks"; // nats subject 
+
+import pkg from 'zstddec';
+const { ZSTDDecoder } = pkg;
+ 
+const decoder = new ZSTDDecoder();
+ 
+await decoder.init();
 
 const test = async function() { //Async Function Expression
     const sc = StringCodec();
@@ -15,7 +20,7 @@ const test = async function() { //Async Function Expression
         token: token,
       });
 
-    let subject = ticks;
+    let subject = revenues;
 
     nc.subscribe(subject, {
         callback: (err, msg) => {
@@ -23,15 +28,7 @@ const test = async function() { //Async Function Expression
             console.log(err)
           } else {
             if (subject === revenues) {
-                // TODO zlib header error
-                zlib.inflate(msg.data, (err, buffer) => {
-                    if (!err) {
-                        console.log(err, sc.decode(buffer));
-                    }
-                    else {
-                        console.log(err);
-                    }
-                });
+                console.log(sc.decode(decoder.decode( msg.data )));
             }
             else { 
                 console.log(sc.decode(msg.data));
@@ -43,3 +40,4 @@ const test = async function() { //Async Function Expression
 }
 
 test();
+
